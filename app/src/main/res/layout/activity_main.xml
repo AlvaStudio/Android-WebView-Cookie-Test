@@ -10,7 +10,7 @@
         android:id="@+id/linkEdit"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="http://dns-shop.ru" />
+        android:text="" />
 
     <Button
         android:id="@+id/btn_1"
@@ -25,5 +25,13 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/btn_1"
         android:text="Start Browser"/>
+
+    <TextView
+        android:id="@+id/textVer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Version"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

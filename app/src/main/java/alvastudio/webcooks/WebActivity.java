@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -73,16 +74,20 @@ public class WebActivity extends Activity {
         Log.d(TAG, "CREATE WEB VIEW");
         siteWebView = (WebView)findViewById(R.id.web_view);
 
+        initSettings(siteWebView);
         setCookies(siteWebView);
         //clearCookies(this);
-
-        initSettings(siteWebView);
 
         siteWebView.loadUrl(urlLink);
         siteWebView.setWebViewClient(new WebViewClient() {
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return super.shouldOverrideUrlLoading(view, url);
+            public boolean shouldOverrideUrlLoading(WebView webView, WebResourceRequest webResourceRequest) {
+                return false;
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView webView, String str) {
+                return false;
             }
 
             @Override
@@ -117,6 +122,7 @@ public class WebActivity extends Activity {
     }
 
     private void initSettings(WebView siteWebView) {
+        siteWebView.getSettings().setJavaScriptEnabled(true);
         siteWebView.getSettings().setAllowContentAccess(true);
         siteWebView.getSettings().setAllowFileAccess(true);
         siteWebView.getSettings().setAllowUniversalAccessFromFileURLs(false);
@@ -124,7 +130,7 @@ public class WebActivity extends Activity {
         siteWebView.getSettings().setAppCacheEnabled(false);
         siteWebView.getSettings().setBlockNetworkImage(false);
         siteWebView.getSettings().setBlockNetworkLoads(false);
-        siteWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        siteWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         siteWebView.getSettings().setDatabaseEnabled(false);
         siteWebView.getSettings().setGeolocationEnabled(true);
         siteWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
@@ -135,7 +141,6 @@ public class WebActivity extends Activity {
         siteWebView.getSettings().setSupportZoom(true);
         siteWebView.getSettings().setDomStorageEnabled(true);
         siteWebView.getSettings().setAppCacheEnabled(true);
-        siteWebView.getSettings().setJavaScriptEnabled(true);
         siteWebView.getSettings().setDisplayZoomControls(false);
         siteWebView.getSettings().setLoadWithOverviewMode(true);
         siteWebView.getSettings().setUseWideViewPort(true);
@@ -147,18 +152,21 @@ public class WebActivity extends Activity {
     }
 
     private void setCookies(WebView webView) {
+        CookieSyncManager.createInstance(this);
+
         CookieManager cookieManager = CookieManager.getInstance();
 
         cookieManager.setAcceptFileSchemeCookies(true);
-        cookieManager.setAcceptCookie(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             cookieManager.setAcceptThirdPartyCookies(webView, true);
+        } else {
+            cookieManager.setAcceptCookie(true);
         }
 
-        String cookie = cookieManager.getCookie(urlLink);
+        //String cookie = cookieManager.getCookie(urlLink);
 
-        Log.d(TAG, "cookie : " + cookie);
+        //Log.d(TAG, "cookie : " + cookie);
     }
 
     private void clearCookies(Context context) {
